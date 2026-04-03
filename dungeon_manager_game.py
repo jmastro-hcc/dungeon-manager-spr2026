@@ -28,4 +28,34 @@ while cclass not in ["W", "M", "R"]:
 
 char = Character(name, cclass, 10, 1, 1)
 
-char.display()
+#char.display()
+
+
+
+# Main menu
+option = '0'
+while option != '6':
+    print()
+    print("=== MAIN MENU ===")
+    print("1. View Character")
+    print("2. Explore Dungeon")
+    print("3. View Inventory")
+    print("4. Save Game")
+    print("5. Load Game")
+    print("6. Exit")
+    option = input("> ")
+    if option == '1':
+        char.display()
+    elif option == '2':
+        pass # TODO
+    elif option == '3':
+        pass # TODO
+    elif option == '4':
+        pass # TODO
+    elif option == '5':
+        pass # TODO
+    elif option == '6':
+        # will exit the loop after this
+        pass
+    else:
+        print("Not a valid option")
