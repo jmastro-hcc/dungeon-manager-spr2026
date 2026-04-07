@@ -9,7 +9,9 @@ class GameState:
     def __init__(self, playerChar):
         self.playerChar = playerChar
         # Inventory is a dictionary mapping item names to how many the player has
-        self.inventory = {}
+        # Start out with 10 gold; everything else must be collected from treasure
+        # chests or winning battles
+        self.inventory = {"Gold": 10}
     
     # Add an item to the inventory
     def addItem(self, itemName, quantity):
