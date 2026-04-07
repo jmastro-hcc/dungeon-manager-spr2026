@@ -1,4 +1,10 @@
 
+classFullName = {
+    "W": "Warrior",
+    "M": "Mage",
+    "R": "Rogue",
+}
+
 class GameState:
     def __init__(self, playerChar):
         self.playerChar = playerChar
@@ -20,6 +26,12 @@ class GameState:
             return True
         else:
             return False
+    
+    # Print everything in the inventory
+    def displayInventory(self):
+        print("Inventory:")
+        for item in self.inventory:
+            print(f"{item}: {self.inventory[item]}")
 
 
 
@@ -34,7 +46,7 @@ class Character:
     # Print this character's stats to the screen
     def display(self):
         print(f"Name: {self.name}")
-        print(f"Class: {self.cclass}")
+        print(f"Class: {classFullName[self.cclass]}")
         print(f"Health: {self.health}")
         print(f"Attack: {self.attack}")
         print(f"Defense: {self.defense}")
@@ -52,7 +64,8 @@ while cclass not in ["W", "M", "R"]:
 
 char = Character(name, cclass, 10, 1, 1)
 
-#char.display()
+# Initialize the game state
+game = GameState(char)
 
 
 
@@ -73,7 +86,8 @@ while option != '6':
     elif option == '2':
         pass # TODO
     elif option == '3':
-        pass # TODO
+        print()
+        game.displayInventory()
     elif option == '4':
         pass # TODO
     elif option == '5':
