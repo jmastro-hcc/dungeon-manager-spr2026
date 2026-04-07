@@ -1,9 +1,18 @@
 
+import random
+
 classFullName = {
     "W": "Warrior",
     "M": "Mage",
     "R": "Rogue",
 }
+
+# Items that could possibly be found in a treasure chest
+# Tuples of (Item name, Quantity)
+possibleTreasureChestItems = [
+    ("Potion", 1),
+    ("Gold", 5),
+]
 
 class GameState:
     def __init__(self, playerChar):
@@ -12,6 +21,21 @@ class GameState:
         # Start out with 10 gold; everything else must be collected from treasure
         # chests or winning battles
         self.inventory = {"Gold": 10}
+    
+    # Explore the dungeon
+    def exploreDungeon(self):
+        # For now, just enter a random room
+        self.randomRoom()
+    
+    # Enter a room
+    def randomRoom(self):
+        r = int(random.random() * 3)
+        if r == 0:
+            # Treasure chest
+            print("You found a treasure chest")
+            item, quantity = random.choice(possibleTreasureChestItems)
+            print(f"Inside is {quantity} {item}")
+            self.addItem(item, quantity)
     
     # Add an item to the inventory
     def addItem(self, itemName, quantity):
@@ -86,7 +110,7 @@ while option != '6':
     if option == '1':
         char.display()
     elif option == '2':
-        pass # TODO
+        game.exploreDungeon()
     elif option == '3':
         print()
         game.displayInventory()
