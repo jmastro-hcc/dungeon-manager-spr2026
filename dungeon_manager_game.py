@@ -14,6 +14,20 @@ possibleTreasureChestItems = [
     ("Gold", 5),
 ]
 
+# Random set of paths out of a room.
+# There's always at least one.
+def randomPaths():
+    paths = []
+    if random.random() < 0.5:
+        paths.append("(L)eft")
+    if random.random() < 0.5:
+        paths.append("(S)traight")
+    if random.random() < 0.5:
+        paths.append("(R)ight")
+    if len(paths) == 0:
+        paths.append("(S)traight")
+    return paths
+
 class GameState:
     def __init__(self, playerChar):
         self.playerChar = playerChar
@@ -24,8 +38,20 @@ class GameState:
     
     # Explore the dungeon
     def exploreDungeon(self):
-        # For now, just enter a random room
-        self.randomRoom()
+        # randomly generate a set of paths the player can take
+        # repeat until they go back to the menu
+        path = ""
+        while path != "M":
+            paths = randomPaths()
+            print()
+            print("There are " + str(len(paths)) + " paths: " + ", ".join(paths))
+            print("Or press M to go back to the menu.")
+            path = input("Which path will you take? ")
+            while path not in ["L", "S", "R", "M"]:
+                path = input("That is not a valid path. Which path? ")
+            if path != "M":
+                # The choice of path is actually meaningless; the room is random regardless
+                self.randomRoom()
     
     # Enter a room
     def randomRoom(self):
@@ -36,6 +62,9 @@ class GameState:
             item, quantity = random.choice(possibleTreasureChestItems)
             print(f"Inside is {quantity} {item}")
             self.addItem(item, quantity)
+        elif r == 2:
+            # Empty room
+            print("There's nothing here")
     
     # Add an item to the inventory
     def addItem(self, itemName, quantity):
