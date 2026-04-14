@@ -62,10 +62,33 @@ class GameState:
             item, quantity = random.choice(possibleTreasureChestItems)
             print(f"Inside is {quantity} {item}")
             self.addItem(item, quantity)
+        elif r == 1:
+            # Enemy encounter
+            self.battleEnemy()
         elif r == 2:
             # Empty room
             print("There's nothing here")
     
+    # Enemy encounter
+    def battleEnemy(self):
+        enemy = randomEnemy()
+        print(f"There is a {enemy.type} here!")
+        while self.playerChar.health > 0 and enemy.health > 0:
+            # Player attacks enemy
+            # will add a menu with ability to use an item later
+            print(f"{self.playerChar.name} attacks {enemy.type}")
+            enemy.health -= attackPower(self.playerChar, enemy)
+
+            # Enemy can only attack player back if it's still alive
+            if enemy.health > 0:
+                print(f"{enemy.type} attacks {self.playerChar.name}")
+                self.playerChar.health -= attackPower(enemy, self.playerChar)
+        
+        if self.playerChar.health <= 0:
+            print("You are dead.")
+        if enemy.health <= 0:
+            print(f"You have killed the {enemy.type}.")
+
     # Add an item to the inventory
     def addItem(self, itemName, quantity):
         if itemName in self.inventory:
@@ -105,6 +128,36 @@ class Character:
         print(f"Health: {self.health}")
         print(f"Attack: {self.attack}")
         print(f"Defense: {self.defense}")
+
+
+
+class Enemy:
+    def __init__(self, type, health, attack, defense):
+        self.type = type
+        self.health = health
+        self.attack = attack
+        self.defense = defense
+
+# Generate a random enemy
+def randomEnemy():
+    # health from 5 to 15
+    health = int(random.random() * 10 + 5)
+    # attack from 1 to 5
+    attack = int(random.random() * 5 + 1)
+    # defense from 1 to 4
+    defense = int(random.random() * 4 + 1)
+    return Enemy("Troll", health, attack, defense)
+
+
+
+# Calculate how much health to take away from a character
+# based on their attack power and the victim's defense
+def attackPower(attacker, defender):
+    power = attacker.attack - defender.defense
+    if power < 0:
+        # can't take negative health
+        power = 0
+    return power
 
 
 
