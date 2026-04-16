@@ -36,6 +36,16 @@ class GameState:
         # chests or winning battles
         self.inventory = {"Gold": 10}
     
+    # Create a new character, if the user wants to
+    # Return True if they did
+    def optionallyCreateNewCharacter(self):
+        createNew = input("Do you want to start over with a new character? (Y/N) ")
+        if createNew == 'Y':
+            self.playerChar = createCharByUserInput()
+            return True
+        else:
+            return False
+
     # Explore the dungeon
     def exploreDungeon(self):
         # randomly generate a set of paths the player can take
@@ -52,6 +62,12 @@ class GameState:
             if path != "M":
                 # The choice of path is actually meaningless; the room is random regardless
                 self.randomRoom()
+                # The player might have died in an enemy encounter.
+                # If so, it's game over.
+                if self.playerChar.isDead():
+                    print()
+                    print("~~~~~ GAME OVER ~~~~~")
+                    return
     
     # Enter a room
     def randomRoom(self):
@@ -128,6 +144,26 @@ class Character:
         print(f"Health: {self.health}")
         print(f"Attack: {self.attack}")
         print(f"Defense: {self.defense}")
+    
+    # Am I still alive?
+    def isAlive(self):
+        return self.health > 0
+    
+    # Am I dead?
+    def isDead(self):
+        return not self.isAlive()
+
+# Ask the user for information about a character
+def createCharByUserInput():
+    print("Create the character who will explore this dungeon")
+
+    name = input("Name: ")
+
+    cclass = input("Class - (W)arrior, (M)age, or (R)ogue: ")
+    while cclass not in ["W", "M", "R"]:
+        cclass = input("Not a valid class - type W, M, or R: ")
+
+    return Character(name, cclass, 10, 1, 1)
 
 
 
@@ -154,26 +190,15 @@ def randomEnemy():
 # based on their attack power and the victim's defense
 def attackPower(attacker, defender):
     power = attacker.attack - defender.defense
-    if power < 0:
-        # can't take negative health
-        power = 0
+    if power < 1:
+        # but it always has at least a little power
+        power = 1
     return power
 
 
 
-# Create the character
-print("Create the character who will explore this dungeon")
-
-name = input("Name: ")
-
-cclass = input("Class - (W)arrior, (M)age, or (R)ogue: ")
-while cclass not in ["W", "M", "R"]:
-    cclass = input("Not a valid class - type W, M, or R: ")
-
-char = Character(name, cclass, 10, 1, 1)
-
-# Initialize the game state
-game = GameState(char)
+# Create the character and initialize the game state
+game = GameState(createCharByUserInput())
 
 
 
@@ -190,9 +215,13 @@ while option != '6':
     print("6. Exit")
     option = input("> ")
     if option == '1':
-        char.display()
+        game.playerChar.display()
     elif option == '2':
         game.exploreDungeon()
+        # If the player died in the dungeon, they can either start over with a new character or quit
+        startOver = game.optionallyCreateNewCharacter()
+        if not startOver:
+            break
     elif option == '3':
         print()
         game.displayInventory()
