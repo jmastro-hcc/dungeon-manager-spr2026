@@ -152,6 +152,25 @@ class GameState:
             for item in self.inventory:
                 f.write(f"{item},{self.inventory[item]}\n")
 
+def loadGame(gameName):
+    filename = gameName + ".txt"
+    with open(filename, 'r') as f:
+        name = f.readline().strip()
+        cclass = f.readline().strip()
+        health = int(f.readline().strip())
+        attack = int(f.readline().strip())
+        defense = int(f.readline().strip())
+        inventory = {}
+        for line in f:
+            item, quantity = line.split(',')
+            inventory[item] = int(quantity)
+    
+    player = Character(name, cclass, health, attack, defense)
+    game = GameState(player)
+    game.inventory = inventory
+
+    return game
+
 
 
 class Character:
@@ -255,7 +274,8 @@ while option != '6':
         gName = input("Enter a name for the game: ")
         game.saveGame(gName)
     elif option == '5':
-        pass # TODO
+        gName = input("Enter name of the game to load: ")
+        game = loadGame(gName)
     elif option == '6':
         # will exit the loop after this
         pass

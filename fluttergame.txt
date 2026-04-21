@@ -1,6 +1,6 @@
 Fluttershy
 R
-10
+3
 1
 1
 Gold,30
