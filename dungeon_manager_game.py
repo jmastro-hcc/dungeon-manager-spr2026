@@ -129,6 +129,31 @@ class GameState:
 
 
 
+    # Save / load functionality
+    # The save file format is:
+    # <player name>
+    # <player class>
+    # <player health>
+    # <player attack>
+    # <player defense>
+    # <inventory item>,<quantity>
+    # <inventory item>,<quantity>
+    # <inventory item>,<quantity>
+    # etc.
+
+    def saveGame(self, gameName):
+        filename = gameName + ".txt"
+        with open(filename, 'w') as f:
+            f.write(self.playerChar.name + '\n')
+            f.write(self.playerChar.cclass + '\n')
+            f.write(str(self.playerChar.health) + '\n')
+            f.write(str(self.playerChar.attack) + '\n')
+            f.write(str(self.playerChar.defense) + '\n')
+            for item in self.inventory:
+                f.write(f"{item},{self.inventory[item]}\n")
+
+
+
 class Character:
     def __init__(self, name, cclass, health, attack, defense):
         self.name = name
@@ -219,14 +244,16 @@ while option != '6':
     elif option == '2':
         game.exploreDungeon()
         # If the player died in the dungeon, they can either start over with a new character or quit
-        startOver = game.optionallyCreateNewCharacter()
-        if not startOver:
-            break
+        if game.playerChar.isDead():
+            startOver = game.optionallyCreateNewCharacter()
+            if not startOver:
+                break
     elif option == '3':
         print()
         game.displayInventory()
     elif option == '4':
-        pass # TODO
+        gName = input("Enter a name for the game: ")
+        game.saveGame(gName)
     elif option == '5':
         pass # TODO
     elif option == '6':
