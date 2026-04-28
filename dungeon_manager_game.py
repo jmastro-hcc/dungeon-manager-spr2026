@@ -11,8 +11,15 @@ classFullName = {
 # Tuples of (Item name, Quantity)
 possibleTreasureChestItems = [
     ("Potion", 1),
+    ("Toy Knife", 1),
     ("Gold", 5),
 ]
+
+# Items that are weapons and can be used in a battle
+weaponItems = ["Potion", "Toy Knife"]
+
+# Types of potions
+potionTypes = ["Exploding Potion", "Health Potion"]
 
 # Random set of paths out of a room.
 # There's always at least one.
@@ -92,8 +99,7 @@ class GameState:
         while self.playerChar.health > 0 and enemy.health > 0:
             # Player attacks enemy
             # will add a menu with ability to use an item later
-            print(f"{self.playerChar.name} attacks {enemy.type}")
-            enemy.health -= attackPower(self.playerChar, enemy)
+            self.attackMenu(enemy)
 
             # Enemy can only attack player back if it's still alive
             if enemy.health > 0:
@@ -104,6 +110,57 @@ class GameState:
             print("You are dead.")
         if enemy.health <= 0:
             print(f"You have killed the {enemy.type}.")
+    
+    # A menu for attacking (using an item or otherwise) during a battle
+    def attackMenu(self, enemy):
+        print(f"Press P to punch the {enemy.type}, or use one of these items:")
+        for itemName in self.inventory:
+            # only list it as an option if it is a weapon and the player has any
+            if itemName in weaponItems and self.inventory[itemName] > 0:
+                print(f"  {itemName}")
+        
+        # there are multiple reasons why this might need to be asked again
+        reAsk = True
+        while reAsk:
+            itemToUse = input("> ")
+            if itemToUse == "P":
+                # punch; valid option
+                reAsk = False
+            elif itemToUse not in self.inventory or self.inventory[itemToUse] <= 0:
+                print(f"You do not have any {itemToUse}. Try something else.")
+                reAsk = True
+            elif itemToUse not in weaponItems:
+                print(f"{itemToUse} is not a weapon. Try something else.")
+                reAsk = True
+            else:
+                # valid item
+                reAsk = False
+        
+        if itemToUse == "P":
+            print(f"{self.playerChar.name} punches {enemy.type}")
+            enemy.health -= attackPower(self.playerChar, enemy)
+        elif itemToUse == "Toy Knife":
+            # knife has 3 attack power
+            print(f"{self.playerChar.name} used Toy Knife. +3 attack.")
+            enemy.health -= attackPowerNumber(3, enemy)
+            # you keep the knife even after using it
+        elif itemToUse == "Potion":
+            # There are two possible potions, and you don't know what
+            # each one is until you use it
+            potion = random.choice(potionTypes)
+            if potion == "Exploding Potion":
+                print(f"{self.playerChar.name} used a potion. It explodes! +10 attack.")
+                enemy.health -= attackPowerNumber(10, enemy)
+                # about one third of the time, the player gets caught
+                # in the blast
+                if random.random() > 0.66:
+                    print(f"{self.playerChar.name} is caught in the blast. -2 health.")
+                    self.playerChar.health -= 2
+            elif potion == "Health Potion":
+                print(f"{self.playerChar.name} used a potion. It's a health potion! +8 health.")
+                self.playerChar.health += 8
+            # one potion has been used
+            self.inventory["Potion"] -= 1
 
     # Add an item to the inventory
     def addItem(self, itemName, quantity):
@@ -233,7 +290,12 @@ def randomEnemy():
 # Calculate how much health to take away from a character
 # based on their attack power and the victim's defense
 def attackPower(attacker, defender):
-    power = attacker.attack - defender.defense
+    return attackPowerNumber(attacker.attack, defender)
+
+# Calculate how much health to take away from a character
+# based on thee given attack power and the victim's defense
+def attackPowerNumber(givenPower, defender):
+    power = givenPower - defender.defense
     if power < 1:
         # but it always has at least a little power
         power = 1
