@@ -28,11 +28,23 @@ possibleRewardItems["Troll"] = [
     ("Nothing", 0),
 ]
 
+# Items that you can buy in a shop
+# These tuples in this dictionary are (Quantity, Price)
+possibleShopItems = {
+    "Potion": (4, 10),
+    "Shining Blade of Valor": (1, 100),
+    "Arrows": (5, 15),
+}
+
 # Items that are weapons and can be used in a battle
-weaponItems = ["Potion", "Toy Knife", "Rusty Sword"]
+weaponItems = ["Potion", "Toy Knife", "Rusty Sword", "Shining Blade of Valor", "Arrows"]
 
 # Types of potions
 potionTypes = ["Exploding Potion", "Health Potion"]
+
+# Helpful function for displaying things in a table
+def padWithSpaces(s, numSpaces):
+    return s + " " * (numSpaces - len(s))
 
 # Random set of paths out of a room.
 # There's always at least one.
@@ -111,6 +123,7 @@ class GameState:
             print("There's nothing here")
         else:
             print("There's a shop in this dungeon!")
+            self.shop()
     
     # Enemy encounter
     def battleEnemy(self):
@@ -174,6 +187,12 @@ class GameState:
             # the sword breaks after you use it
             print("The Rusty Sword snaps in half.")
             self.inventory["Rusty Sword"] -= 1
+        elif itemToUse == "Shining Blade of Valor":
+            # TODO
+            pass
+        elif itemToUse == "Arrows":
+            # TODO
+            pass
         elif itemToUse == "Potion":
             # There are two possible potions, and you don't know what
             # each one is until you use it
@@ -191,6 +210,35 @@ class GameState:
                 self.playerChar.health += 8
             # one potion has been used
             self.inventory["Potion"] -= 1
+    
+    # Go shopping
+    def shop(self):
+        print()
+        print("===== DUNGEON SHOP =====")
+        print("Welcome welcome to muh shop! Everything you need to survive in this dungeon,")
+        print("you can find here!")
+        print(padWithSpaces("ITEM", 30) + padWithSpaces("QUANTITY", 10) + "PRICE")
+        for shopItem in possibleShopItems:
+            quantity, price = possibleShopItems[shopItem]
+            print(padWithSpaces(shopItem, 30) + padWithSpaces(str(quantity), 10) + str(price))
+        print(f"You have {self.goldInInventory()} gold to spend.")
+        print("What item do you want to buy? Or type E to exit the shop.")
+        itemToBuy = input("> ")
+        while itemToBuy != "E":
+            if itemToBuy in possibleShopItems:
+                quantity, price = possibleShopItems[itemToBuy]
+                if price <= self.goldInInventory():
+                    print("Purchase made!")
+                    self.addItem(itemToBuy, quantity)
+                    self.inventory["Gold"] -= price
+                    print(f"You have {self.goldInInventory()} gold to spend.")
+                    print("Buy another item, or type E to exit the shop.")
+                else:
+                    print("You don't have enough gold to buy that.")
+                    print("Buy something else?")
+            else:
+                print("There is no item by that name. Buy something else?")
+            itemToBuy = input("> ")
 
     # Add an item to the inventory
     def addItem(self, itemName, quantity):
@@ -208,6 +256,13 @@ class GameState:
         else:
             return False
     
+    # How much gold is in the inventory
+    def goldInInventory(self):
+        if "Gold" in self.inventory:
+            return self.inventory["Gold"]
+        else:
+            return 0
+
     # Print everything in the inventory
     def displayInventory(self):
         print("Inventory:")
