@@ -97,16 +97,16 @@ class GameState:
         # empty room:     40%
         # shop:           10%
         r = random.random()
-        if r < 20:
+        if r < 0.20:
             # Treasure chest
             print("You found a treasure chest")
             item, quantity = random.choice(possibleTreasureChestItems)
             print(f"Inside is {quantity} {item}")
             self.addItem(item, quantity)
-        elif r < 50:
+        elif r < 0.50:
             # Enemy encounter
             self.battleEnemy()
-        elif r < 90:
+        elif r < 0.90:
             # Empty room
             print("There's nothing here")
         else:
