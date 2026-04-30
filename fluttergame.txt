@@ -1,8 +1,9 @@
 Fluttershy
 R
-30
+21
 1
 1
-Gold,40
-Toy Knife,3
-Potion,8
+Gold,65
+Toy Knife,4
+Potion,5
+Nothing,0

@@ -15,8 +15,21 @@ possibleTreasureChestItems = [
     ("Gold", 5),
 ]
 
+# Items that could be given as rewards
+# There are different ones depending on the type of enemy. This dictionary
+# maps the enemy type to a list of (Item, Quantity) tuples just like
+# possibleTreasureChestItems above
+possibleRewardItems = {}
+possibleRewardItems["Troll"] = [
+    ("Rusty Sword", 1),
+    ("Gold", 25),
+    ("Gold", 50),
+    ("Gold", 150),
+    ("Nothing", 0),
+]
+
 # Items that are weapons and can be used in a battle
-weaponItems = ["Potion", "Toy Knife"]
+weaponItems = ["Potion", "Toy Knife", "Rusty Sword"]
 
 # Types of potions
 potionTypes = ["Exploding Potion", "Health Potion"]
@@ -110,6 +123,9 @@ class GameState:
             print("You are dead.")
         if enemy.health <= 0:
             print(f"You have killed the {enemy.type}.")
+            rewardItem, quantity = random.choice(possibleRewardItems[enemy.type])
+            print(f"It had {quantity} {rewardItem} in its pockets")
+            self.addItem(rewardItem, quantity)
     
     # A menu for attacking (using an item or otherwise) during a battle
     def attackMenu(self, enemy):
@@ -144,6 +160,13 @@ class GameState:
             print(f"{self.playerChar.name} used Toy Knife. +3 attack.")
             enemy.health -= attackPowerNumber(3, enemy)
             # you keep the knife even after using it
+        elif itemToUse == "Rusty Sword":
+            # rusty sword has 5 attack power
+            print(f"{self.playerChar.name} used Rusty Sword. +5 attack.")
+            enemy.health -= attackPowerNumber(3, enemy)
+            # the sword breaks after you use it
+            print("The Rusty Sword snaps in half.")
+            self.inventory["Rusty Sword"] -= 1
         elif itemToUse == "Potion":
             # There are two possible potions, and you don't know what
             # each one is until you use it
