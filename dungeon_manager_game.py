@@ -188,11 +188,23 @@ class GameState:
             print("The Rusty Sword snaps in half.")
             self.inventory["Rusty Sword"] -= 1
         elif itemToUse == "Shining Blade of Valor":
-            # TODO
-            pass
+            # very powerful, sometimes
+            if random.random() > 0.75:
+                swordPower = 100
+            elif random.random() > 0.50:
+                swordPower = 5
+            else:
+                swordPower = 0
+            print(f"{self.playerChar.name} used Shining Blade of Valor. +{swordPower} attack.")
+            enemy.health -= attackPowerNumber(swordPower, enemy)
         elif itemToUse == "Arrows":
-            # TODO
-            pass
+            # With arrows, you might miss.
+            print(f"{self.playerChar.name} shot an arrow.")
+            if random.random() > 0.25:
+                print("Hit! +6 attack.")
+                enemy.health -= attackPowerNumber(6, enemy)
+            else:
+                print("The arrow missed completely.")
         elif itemToUse == "Potion":
             # There are two possible potions, and you don't know what
             # each one is until you use it

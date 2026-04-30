@@ -7,3 +7,5 @@ Gold,65
 Toy Knife,4
 Potion,5
 Nothing,0
+Arrows,10
+Shining Blade of Valor,1
