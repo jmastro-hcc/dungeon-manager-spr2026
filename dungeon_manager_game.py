@@ -151,7 +151,6 @@ class GameState:
         r = random.random()
         if direction == 'L':
             roomType = random.choices(["Chest", "Enemy", "Empty", "Shop"], [20, 30, 40, 10])[0]
-            print(roomType)
         elif direction == 'S':
             roomType = random.choices(["Chest", "Enemy", "Empty", "Shop"], [10, 80, 5, 5])[0]
         elif direction == 'R':
