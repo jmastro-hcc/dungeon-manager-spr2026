@@ -88,6 +88,16 @@ def randomPaths():
         paths.append("(S)traight")
     return paths
 
+# Valid inputs for the given list of paths
+def validInputsForPaths(paths):
+    inputs = []
+    for path in paths:
+        # the input letter is the second character of the string (e.g. L in "(L)eft")
+        inputs.append(path[1])
+    # "M" for Menu is always valid
+    inputs.append("M")
+    return inputs
+
 class GameState:
     def __init__(self, playerChar):
         self.playerChar = playerChar
@@ -113,12 +123,13 @@ class GameState:
         path = ""
         while path != "M":
             paths = randomPaths()
+            validInputs = validInputsForPaths(paths)
             print()
             print("There are " + str(len(paths)) + " paths: " + ", ".join(paths))
             print("Or press M to go back to the menu.")
             path = input("Which path will you take? ")
-            while path not in ["L", "S", "R", "M"]:
-                path = input("That is not a valid path. Which path? ")
+            while path not in validInputs:
+                path = input("There is no path going that direction. Which path? ")
             if path != "M":
                 # The choice of path is actually meaningless; the room is random regardless
                 self.randomRoom()
