@@ -131,8 +131,8 @@ class GameState:
             while path not in validInputs:
                 path = input("There is no path going that direction. Which path? ")
             if path != "M":
-                # The choice of path is actually meaningless; the room is random regardless
-                self.randomRoom()
+                # The choice of path determines how likely different things are to be in that room
+                self.randomRoom(path)
                 # The player might have died in an enemy encounter.
                 # If so, it's game over.
                 if self.playerChar.isDead():
@@ -141,26 +141,34 @@ class GameState:
                     return
     
     # Enter a room
-    def randomRoom(self):
-        # probabilities of various rooms:
-        # treasure chest: 20%
-        # enemy:          30%
-        # empty room:     40%
-        # shop:           10%
+    def randomRoom(self, direction):
+        # probabilities of various rooms depends on what direction you took to get there:
+        #                 L   S   R
+        # treasure chest: 20% 10% 20%
+        # enemy:          30% 80% 10%
+        # empty room:     40% 5%  10%
+        # shop:           10% 5%  60%
         r = random.random()
-        if r < 0.20:
+        if direction == 'L':
+            roomType = random.choices(["Chest", "Enemy", "Empty", "Shop"], [20, 30, 40, 10])[0]
+            print(roomType)
+        elif direction == 'S':
+            roomType = random.choices(["Chest", "Enemy", "Empty", "Shop"], [10, 80, 5, 5])[0]
+        elif direction == 'R':
+            roomType = random.choices(["Chest", "Enemy", "Empty", "Shop"], [20, 10, 10, 60])[0]
+        if roomType == "Chest":
             # Treasure chest
             print("You found a treasure chest")
             item, quantity = random.choice(possibleTreasureChestItems)
             print(f"Inside is {quantity} {item}")
             self.addItem(item, quantity)
-        elif r < 0.50:
+        elif roomType == "Enemy":
             # Enemy encounter
             self.battleEnemy()
-        elif r < 0.90:
+        elif roomType == "Empty":
             # Empty room
             print("There's nothing here")
-        else:
+        elif roomType == "Shop":
             print("There's a shop in this dungeon!")
             self.shop()
     
