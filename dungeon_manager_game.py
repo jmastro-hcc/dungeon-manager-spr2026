@@ -35,11 +35,11 @@ possibleRewardItems["Troll"] = [
     ("Gold", 25),
     ("Gold", 50),
     ("Gold", 150),
-    ("Nothing", 0),
+    ("Nothing", 2),
 ]
 possibleRewardItems["Evil Unicorn"] = [
     ("Potion", 10),
-    ("Nothing", 0),
+    ("Nothing", 10),
 ]
 
 possibleRewardItems["Feral Chimpunk"] = [
@@ -50,10 +50,10 @@ possibleRewardItems["Demon Lord"] = [
     ("Arrows", 30),
     ("Gold", 5),
     ("Gold", 175),
-    ("Nothing", 0),
-    ("Nothing", 0),
-    ("Nothing", 0),
-    ("Nothing", 0),
+    ("Nothing", 4),
+    ("Nothing", 5),
+    ("Nothing", 6),
+    ("Nothing", 10),
 ]
 
 # Items that you can buy in a shop
@@ -65,7 +65,7 @@ possibleShopItems = {
 }
 
 # Items that are weapons and can be used in a battle
-weaponItems = ["Potion", "Toy Knife", "Rusty Sword", "Shining Blade of Valor", "Arrows"]
+weaponItems = ["Potion", "Toy Knife", "Rusty Sword", "Shining Blade of Valor", "Arrows", "Nothing"]
 
 # Types of potions
 potionTypes = ["Exploding Potion", "Health Potion"]
@@ -199,7 +199,8 @@ class GameState:
         print(f"Press P to punch the {enemy.type}, or use one of these items:")
         for itemName in self.inventory:
             # only list it as an option if it is a weapon and the player has any
-            if itemName in weaponItems and self.inventory[itemName] > 0:
+            # however, don't print "Nothing"; it's a secret weapon
+            if itemName in weaponItems and self.inventory[itemName] > 0 and itemName != "Nothing":
                 print(f"  {itemName}")
         
         # there are multiple reasons why this might need to be asked again
@@ -269,6 +270,15 @@ class GameState:
                 self.playerChar.health += 8
             # one potion has been used
             self.inventory["Potion"] -= 1
+        elif itemToUse == "Nothing":
+            # Usually, Nothing does nothing. But sometimes it's lethal.
+            if random.random() < 0.02:
+                print(f"{self.playerChar.name} did nothing. The {enemy.type} spontaneously keels over and dies.")
+                enemy.health = 0
+            else:
+                print(f"{self.playerChar.name} did nothing. Unsurprisingly, nothing happens.")
+            # one Nothing has been used
+            self.inventory["Nothing"] -= 1
     
     # Go shopping
     def shop(self):

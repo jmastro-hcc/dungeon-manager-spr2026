@@ -1,10 +1,10 @@
 Twilight
 M
-5
+100
 2
 8
 Gold,335
 Potion,0
 Toy Knife,1
-Nothing,0
+Nothing,100
 Rusty Sword,0
