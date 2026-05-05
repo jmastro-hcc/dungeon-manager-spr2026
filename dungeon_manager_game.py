@@ -7,6 +7,16 @@ classFullName = {
     "R": "Rogue",
 }
 
+# Types of enemies
+# Each tuple is the upper and lower bounds for their randomly generated
+# starting health, attack, and defense
+enemyTypes = [
+    ("Troll", (5, 15), (1, 6), (1, 5)),
+    ("Evil Unicorn", (4, 20), (1, 8), (3, 7)),
+    ("Feral Chimpunk", (1, 3), (30, 40), (0, 1)),
+    ("Demon Lord", (12, 30), (5, 7), (0, 50)),
+]
+
 # Items that could possibly be found in a treasure chest
 # Tuples of (Item name, Quantity)
 possibleTreasureChestItems = [
@@ -25,6 +35,24 @@ possibleRewardItems["Troll"] = [
     ("Gold", 25),
     ("Gold", 50),
     ("Gold", 150),
+    ("Nothing", 0),
+]
+possibleRewardItems["Evil Unicorn"] = [
+    ("Potion", 10),
+    ("Nothing", 0),
+]
+
+possibleRewardItems["Feral Chimpunk"] = [
+    ("Gold", 1),
+]
+
+possibleRewardItems["Demon Lord"] = [
+    ("Arrows", 30),
+    ("Gold", 5),
+    ("Gold", 175),
+    ("Nothing", 0),
+    ("Nothing", 0),
+    ("Nothing", 0),
     ("Nothing", 0),
 ]
 
@@ -384,13 +412,12 @@ class Enemy:
 
 # Generate a random enemy
 def randomEnemy():
-    # health from 5 to 15
-    health = int(random.random() * 10 + 5)
-    # attack from 1 to 5
-    attack = int(random.random() * 5 + 1)
-    # defense from 1 to 4
-    defense = int(random.random() * 4 + 1)
-    return Enemy("Troll", health, attack, defense)
+    enemyTypeData = random.choice(enemyTypes)
+    typeName, healthRange, attackRange, defenseRange = enemyTypeData
+    health = random.randrange(healthRange[0], healthRange[1])
+    attack = random.randrange(attackRange[0], attackRange[1])
+    defense = random.randrange(defenseRange[0], defenseRange[1])
+    return Enemy(typeName, health, attack, defense)
 
 
 
