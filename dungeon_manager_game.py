@@ -183,7 +183,7 @@ class GameState:
         elif itemToUse == "Rusty Sword":
             # rusty sword has 5 attack power
             print(f"{self.playerChar.name} used Rusty Sword. +5 attack.")
-            enemy.health -= attackPowerNumber(3, enemy)
+            enemy.health -= attackPowerNumber(5, enemy)
             # the sword breaks after you use it
             print("The Rusty Sword snaps in half.")
             self.inventory["Rusty Sword"] -= 1
@@ -361,7 +361,17 @@ def createCharByUserInput():
     while cclass not in ["W", "M", "R"]:
         cclass = input("Not a valid class - type W, M, or R: ")
 
-    return Character(name, cclass, 10, 1, 1)
+    # Initial stats depend on class:
+    # Class     Health   Attack   Defense
+    # Warrior   20       4        4
+    # Mage      35       2        8
+    # Rogue     50       2        2
+    if cclass == "W":
+        return Character(name, cclass, 20, 4, 4)
+    elif cclass == "M":
+        return Character(name, cclass, 35, 2, 8)
+    elif cclass == "R":
+        return Character(name, cclass, 50, 2, 2)
 
 
 
