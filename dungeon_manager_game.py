@@ -1,3 +1,6 @@
+# Dungeon Manager
+# CSI 106 Final Project
+# Josiah Mastromonaco
 
 import random
 
